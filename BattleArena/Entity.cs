@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace BattleArena
 {
@@ -20,11 +21,11 @@ namespace BattleArena
         {
             get { return _health; }
         }
-        public float AttackPower
+        public virtual float AttackPower
         {
             get { return _attackPower; }
         }
-        public float DefensePower
+        public virtual float DefensePower
         {
             get { return _defensePower; }
         }
@@ -56,9 +57,30 @@ namespace BattleArena
             return damageTaken;
         }
 
-        public float Attack() 
+        public float Attack(Entity Victim) 
         {
+            return Victim.TakeDamage(AttackPower);
+        }
 
+        public virtual void Save(StreamWriter writer) 
+        {
+            writer.WriteLine(_name);
+            writer.WriteLine(_health);
+            writer.WriteLine(_attackPower);
+            writer.WriteLine(_defensePower);
+        }
+
+        public virtual bool Load(StreamReader reader) 
+        {
+            _name = reader.ReadLine();
+            if (!float.TryParse(reader.ReadLine(), out _health))
+                return false;
+            if (!float.TryParse(reader.ReadLine(), out _attackPower))
+                return false;
+            if (!float.TryParse(reader.ReadLine(), out _defensePower))
+                return false;
+
+            return true;
         }
     }
 }
